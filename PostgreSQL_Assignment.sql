@@ -97,10 +97,6 @@ SELECT location FROM sightings
 WHERE location ILIKE '%pass%';
 
 -- Problem 4
-SELECT ranger_id, count(*) FROM sightings
-GROUP BY ranger_id
-ORDER BY ranger_id ASC;
-
 SELECT rangers.ranger_name, rangers.ranger_id, count(sightings.sighting_id) AS total_sightings FROM rangers 
 LEFT JOIN sightings ON rangers.ranger_id = sightings.ranger_id
 GROUP BY  rangers.ranger_name, rangers.ranger_id
