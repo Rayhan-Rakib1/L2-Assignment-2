@@ -1,12 +1,12 @@
 -- create rangers
 CREATE TABLE rangers(
     ranger_id SERIAL PRIMARY KEY,
-    ranger_name VARCHAR(50) NOT NULL,
+    name VARCHAR(50) NOT NULL,
     region  VARCHAR(50) NOT NULL
 );
 
 
-INSERT INTO rangers (ranger_id, ranger_name, region) VALUES
+INSERT INTO rangers (ranger_id, name, region) VALUES
 (1, 'Alice Green', 'Northern Hills'),
 (2, 'Bob White', 'River Delta'),
 (3, 'Carol King', 'Mountain Range'),
@@ -86,7 +86,7 @@ SELECT * FROM sightings;
 
 
 -- problem 1   -----------------
-INSERT INTO rangers(ranger_id, ranger_name, region) VALUES (11, 'Derek Fox', 'Coastal Plains') ;
+INSERT INTO rangers(ranger_id, name, region) VALUES (11, 'Derek Fox', 'Coastal Plains') ;
 
 
 -- Problem 2
@@ -97,10 +97,12 @@ SELECT location FROM sightings
 WHERE location ILIKE '%pass%';
 
 -- Problem 4
-SELECT rangers.ranger_name, rangers.ranger_id, count(sightings.sighting_id) AS total_sightings FROM rangers 
-LEFT JOIN sightings ON rangers.ranger_id = sightings.ranger_id
-GROUP BY  rangers.ranger_name, rangers.ranger_id
+SELECT r.ranger_id, r.name, COUNT(s.sighting_id) AS total_sightings
+FROM rangers r
+LEFT JOIN sightings s ON r.ranger_id = s.ranger_id
+GROUP BY r.ranger_id, r.name
 ORDER BY total_sightings DESC;
+
 
 -- problem 5
 SELECT species.species_id, species.common_name FROM species
@@ -108,11 +110,13 @@ LEFT JOIN sightings ON species.species_id = sightings.species_id
 WHERE sightings.species_id IS NULL ;
 
 -- problem 6  
-SELECT  rangers.ranger_name, species.common_name, sightings.sighting_time FROM sightings
-JOIN species ON sightings.species_id = species.species_id
-JOIN rangers on sightings.ranger_id = rangers.ranger_id
-ORDER BY sightings.sighting_time DESC
+SELECT sp.common_name, s.sighting_time, r.name
+FROM sightings s
+JOIN species sp ON s.species_id = sp.species_id
+JOIN rangers r ON s.ranger_id = r.ranger_id
+ORDER BY s.sighting_time DESC
 LIMIT 2;
+
 
 
 -- problem 7 
@@ -125,9 +129,12 @@ SELECT sighting_id, ranger_id, species_id, sighting_time ,
 CASE 
     WHEN EXTRACT(HOUR FROM sighting_time) BETWEEN 5 AND 11  THEN 'Morning'  
     WHEN EXTRACT(HOUR FROM sighting_time) BETWEEN 12 AND 16  THEN 'Afternoon'  
-    WHEN EXTRACT(HOUR FROM sighting_time) BETWEEN 17 AND 28  THEN 'Evening'  
+    WHEN EXTRACT(HOUR FROM sighting_time) BETWEEN 17 AND 20  THEN 'Evening'  
     ELSE  'Night'
 END FROM sightings;
+
+
+
 
 -- Problem 9
 DELETE FROM rangers
